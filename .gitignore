@@ -17,3 +17,8 @@ DerivedData
 
 Pods/
 .DS_Store
+=======
+Carthage/
+
+# Finder
+.DS_Store

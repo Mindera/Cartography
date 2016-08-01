@@ -24,6 +24,17 @@ typealias Accumulator = ([NSLayoutConstraint], LayoutProxy)
     }.0
 }
 
+private func reduce(views: [LayoutProxy], combine: (LayoutProxy, LayoutProxy) -> NSLayoutConstraint) -> [NSLayoutConstraint] {
+    let (first, rest) = splitLayoutProxyArray(views)
+    rest.last?.view.car_translatesAutoresizingMaskIntoConstraints = false
+    
+    return rest.reduce(([], first)) { (acc, current) -> Accumulator in
+        let (constraints, previous) = acc
+        
+        return (constraints + [ combine(previous, current) ], current)
+        }.0
+}
+
 /// Distributes multiple views horizontally.
 ///
 /// All views passed to this function will have
@@ -36,6 +47,10 @@ typealias Accumulator = ([NSLayoutConstraint], LayoutProxy)
 ///
 @discardableResult public func distribute(by amount: CGFloat, horizontally first: LayoutProxy, _ rest: LayoutProxy...) -> [NSLayoutConstraint] {
     return reduce(first, rest: rest) { $0.trailing == $1.leading - amount }
+}
+
+public func distribute(by amount: CGFloat, horizontally views: [LayoutProxy]) -> [NSLayoutConstraint] {
+    return reduce(views) { $0.trailing == $1.leading - amount }
 }
 
 /// Distributes multiple views horizontally from left to right.
@@ -52,6 +67,10 @@ typealias Accumulator = ([NSLayoutConstraint], LayoutProxy)
     return reduce(first, rest: rest) { $0.right == $1.left - amount  }
 }
 
+public func distribute(by amount: CGFloat, leftToRight views: [LayoutProxy]) -> [NSLayoutConstraint] {
+    return reduce(views) { $0.right == $1.left - amount  }
+}
+
 /// Distributes multiple views vertically.
 ///
 /// All views passed to this function will have
@@ -65,3 +84,8 @@ typealias Accumulator = ([NSLayoutConstraint], LayoutProxy)
 @discardableResult public func distribute(by amount: CGFloat, vertically first: LayoutProxy, _ rest: LayoutProxy...) -> [NSLayoutConstraint] {
     return reduce(first, rest: rest) { $0.bottom == $1.top - amount }
 }
+
+public func distribute(by amount: CGFloat, vertically views: [LayoutProxy]) -> [NSLayoutConstraint] {
+    return reduce(views) { $0.bottom == $1.top - amount }
+}
+

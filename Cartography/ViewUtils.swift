@@ -12,7 +12,12 @@ import UIKit
 import AppKit
 #endif
 
-internal func closestCommonAncestor(_ a: View, b: View) -> View? {
+internal func splitLayoutProxyArray(views: [LayoutProxy]) -> (LayoutProxy, [LayoutProxy]) {
+    var views = views
+    return (views.removeFirst(), views)
+}
+
+internal func closestCommonAncestor(a: View, b: View) -> View? {
     let (aSuper, bSuper) = (a.superview, b.superview)
 
     if a === b { return a }
