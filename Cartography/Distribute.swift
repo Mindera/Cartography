@@ -14,7 +14,7 @@
 
 typealias Accumulator = ([NSLayoutConstraint], LayoutProxy)
 
-private func reduce(first: LayoutProxy, rest: [LayoutProxy], combine: (LayoutProxy, LayoutProxy) -> NSLayoutConstraint) -> [NSLayoutConstraint] {
+private func reduce(first: LayoutProxy, rest: ArraySlice<LayoutProxy>, combine: (LayoutProxy, LayoutProxy) -> NSLayoutConstraint) -> [NSLayoutConstraint] {
     rest.last?.view.car_translatesAutoresizingMaskIntoConstraints = false
 
     return rest.reduce(([], first)) { (acc, current) -> Accumulator in
@@ -24,15 +24,12 @@ private func reduce(first: LayoutProxy, rest: [LayoutProxy], combine: (LayoutPro
     }.0
 }
 
+private func reduce(first: LayoutProxy, rest: [LayoutProxy], combine: (LayoutProxy, LayoutProxy) -> NSLayoutConstraint) -> [NSLayoutConstraint] {
+    return reduce(first, rest: rest[0..<rest.count], combine: combine)
+}
+
 private func reduce(views: [LayoutProxy], combine: (LayoutProxy, LayoutProxy) -> NSLayoutConstraint) -> [NSLayoutConstraint] {
-    let (first, rest) = splitLayoutProxyArray(views)
-    rest.last?.view.car_translatesAutoresizingMaskIntoConstraints = false
-    
-    return rest.reduce(([], first)) { (acc, current) -> Accumulator in
-        let (constraints, previous) = acc
-        
-        return (constraints + [ combine(previous, current) ], current)
-        }.0
+    return reduce(views.first!, rest: views[1..<views.count], combine: combine)
 }
 
 /// Distributes multiple views horizontally.
@@ -52,6 +49,8 @@ public func distribute(by amount: CGFloat, horizontally first: LayoutProxy, _ re
 public func distribute(by amount: CGFloat, horizontally views: [LayoutProxy]) -> [NSLayoutConstraint] {
     return reduce(views) { $0.trailing == $1.leading - amount }
 }
+
+
 
 /// Distributes multiple views horizontally from left to right.
 ///
