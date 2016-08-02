@@ -50,8 +50,6 @@ public func distribute(by amount: CGFloat, horizontally views: [LayoutProxy]) ->
     return reduce(views) { $0.trailing == $1.leading - amount }
 }
 
-
-
 /// Distributes multiple views horizontally from left to right.
 ///
 /// All views passed to this function will have
