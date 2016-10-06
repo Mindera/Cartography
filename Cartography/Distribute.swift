@@ -8,7 +8,7 @@
 
 #if os(iOS) || os(tvOS)
     import UIKit
-    #else
+#else
     import AppKit
 #endif
 
@@ -16,12 +16,20 @@ typealias Accumulator = ([NSLayoutConstraint], LayoutProxy)
 
 @discardableResult private func reduce(_ first: LayoutProxy, rest: ArraySlice<LayoutProxy>, combine: (LayoutProxy, LayoutProxy) -> NSLayoutConstraint) -> [NSLayoutConstraint] {
     rest.last?.view.car_translatesAutoresizingMaskIntoConstraints = false
-
+    
     return rest.reduce(([], first)) { (acc, current) -> Accumulator in
         let (constraints, previous) = acc
-
+        
         return (constraints + [ combine(previous, current) ], current)
-    }.0
+        }.0
+}
+
+private func reduce(_ first: LayoutProxy, rest: [LayoutProxy], combine: (LayoutProxy, LayoutProxy) -> NSLayoutConstraint) -> [NSLayoutConstraint] {
+    return reduce(first, rest: rest[0..<rest.count], combine: combine)
+}
+
+private func reduce(_ views: [LayoutProxy], combine: (LayoutProxy, LayoutProxy) -> NSLayoutConstraint) -> [NSLayoutConstraint] {
+    return reduce(views.first!, rest: views[1..<views.count], combine: combine)
 }
 
 private func reduce(_ first: LayoutProxy, rest: [LayoutProxy], combine: (LayoutProxy, LayoutProxy) -> NSLayoutConstraint) -> [NSLayoutConstraint] {
