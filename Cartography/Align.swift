@@ -20,8 +20,8 @@ private func makeEqual<P: RelativeEquality>(_ attribute: (LayoutProxy) -> P, fir
     }
 }
 
-private func makeEqual<P: RelativeEquality>(attribute: LayoutProxy -> P, views: [LayoutProxy]) -> [NSLayoutConstraint] {
-    let (first, rest) = splitLayoutProxyArray(views)
+private func makeEqual<P: RelativeEquality>(attribute: (LayoutProxy) -> P, views: [LayoutProxy]) -> [NSLayoutConstraint] {
+    let (first, rest) = splitLayoutProxyArray(views: views)
     return rest.reduce([]) { acc, current in
         current.view.car_translatesAutoresizingMaskIntoConstraints = false
         
@@ -41,7 +41,7 @@ private func makeEqual<P: RelativeEquality>(attribute: LayoutProxy -> P, views: 
 }
 
 public func align(top views: [LayoutProxy]) -> [NSLayoutConstraint] {
-    return makeEqual({ $0.top }, views: views)
+    return makeEqual(attribute: { $0.top }, views: views)
 }
 
 /// Aligns multiple views by their right edge.
@@ -56,7 +56,7 @@ public func align(top views: [LayoutProxy]) -> [NSLayoutConstraint] {
 }
 
 public func align(right views: [LayoutProxy]) -> [NSLayoutConstraint] {
-    return makeEqual({ $0.right }, views: views)
+    return makeEqual(attribute: { $0.right }, views: views)
 }
 
 /// Aligns multiple views by their bottom edge.
@@ -71,7 +71,7 @@ public func align(right views: [LayoutProxy]) -> [NSLayoutConstraint] {
 }
 
 public func align(bottom views: [LayoutProxy]) -> [NSLayoutConstraint] {
-    return makeEqual({ $0.bottom }, views: views)
+    return makeEqual(attribute: { $0.bottom }, views: views)
 }
 
 /// Aligns multiple views by their left edge.
@@ -86,7 +86,7 @@ public func align(bottom views: [LayoutProxy]) -> [NSLayoutConstraint] {
 }
 
 public func align(left views: [LayoutProxy]) -> [NSLayoutConstraint] {
-    return makeEqual({ $0.left }, views: views)
+    return makeEqual(attribute: { $0.left }, views: views)
 }
 
 /// Aligns multiple views by their leading edge.
@@ -101,7 +101,7 @@ public func align(left views: [LayoutProxy]) -> [NSLayoutConstraint] {
 }
 
 public func align(leading views: [LayoutProxy]) -> [NSLayoutConstraint] {
-    return makeEqual({ $0.leading }, views: views)
+    return makeEqual(attribute: { $0.leading }, views: views)
 }
 
 /// Aligns multiple vies by their trailing edge.
@@ -116,7 +116,7 @@ public func align(leading views: [LayoutProxy]) -> [NSLayoutConstraint] {
 }
 
 public func align(trailing views: [LayoutProxy]) -> [NSLayoutConstraint] {
-    return makeEqual({ $0.trailing }, views: views)
+    return makeEqual(attribute: { $0.trailing }, views: views)
 }
 
 /// Aligns multiple views by their horizontal center.
@@ -131,7 +131,7 @@ public func align(trailing views: [LayoutProxy]) -> [NSLayoutConstraint] {
 }
 
 public func align(centerX views: [LayoutProxy]) -> [NSLayoutConstraint] {
-    return makeEqual({ $0.centerX }, views: views)
+    return makeEqual(attribute: { $0.centerX }, views: views)
 }
 
 /// Aligns multiple views by their vertical center.
@@ -146,7 +146,7 @@ public func align(centerX views: [LayoutProxy]) -> [NSLayoutConstraint] {
 }
 
 public func align(centerY views: [LayoutProxy]) -> [NSLayoutConstraint] {
-    return makeEqual({ $0.centerY }, views: views)
+    return makeEqual(attribute: { $0.centerY }, views: views)
 }
 
 /// Aligns multiple views by their baseline.
@@ -161,5 +161,5 @@ public func align(centerY views: [LayoutProxy]) -> [NSLayoutConstraint] {
 }
 
 public func align(baseline views: [LayoutProxy]) -> [NSLayoutConstraint] {
-    return makeEqual({ $0.baseline }, views: views)
+    return makeEqual(attribute: { $0.baseline }, views: views)
 }

@@ -24,11 +24,11 @@ typealias Accumulator = ([NSLayoutConstraint], LayoutProxy)
     }.0
 }
 
-private func reduce(first: LayoutProxy, rest: [LayoutProxy], combine: (LayoutProxy, LayoutProxy) -> NSLayoutConstraint) -> [NSLayoutConstraint] {
+private func reduce(_ first: LayoutProxy, rest: [LayoutProxy], combine: (LayoutProxy, LayoutProxy) -> NSLayoutConstraint) -> [NSLayoutConstraint] {
     return reduce(first, rest: rest[0..<rest.count], combine: combine)
 }
 
-private func reduce(views: [LayoutProxy], combine: (LayoutProxy, LayoutProxy) -> NSLayoutConstraint) -> [NSLayoutConstraint] {
+private func reduce(_ views: [LayoutProxy], combine: (LayoutProxy, LayoutProxy) -> NSLayoutConstraint) -> [NSLayoutConstraint] {
     return reduce(views.first!, rest: views[1..<views.count], combine: combine)
 }
 
